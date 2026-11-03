@@ -1,4 +1,19 @@
 
+-- ============================================================
+--  create_database.sql
+--  Safe to run again at any time (nothing gets duplicated).
+--
+--  The file has two parts:
+--    PART 1 - FINAL:       tables + real game data (keep these)
+--    PART 2 - PLACEHOLDER: example rows for testing
+--                          (replace/delete for the final version)
+-- ============================================================
+
+
+-- ############################################################
+-- ##  PART 1 - FINAL  (stays in the finished game)          ##
+-- ############################################################
+
 -- Create the database
 CREATE DATABASE IF NOT EXISTS StoryGameDB;
 
@@ -44,6 +59,8 @@ CREATE TABLE IF NOT EXISTS GameProgress (
 
 
 -- 3. ACHIEVEMENTS
+--    Unity unlocks these by Name, so the Name here must match
+--    the text typed in the Inspector (e.g. Victim > Achievement On Kill).
 CREATE TABLE IF NOT EXISTS Achievements (
     AchievementID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL UNIQUE,
@@ -91,7 +108,17 @@ INSERT IGNORE INTO GameProgress (ProgressID)
 VALUES (1);
 
 
--- Example achievements
+-- Final achievements
+INSERT IGNORE INTO Achievements (Name, Description)
+VALUES
+    ('Night 1 Complete', 'You finished the first night.');
+
+
+-- ############################################################
+-- ##  PART 2 - PLACEHOLDER  (example data, replace for final) ##
+-- ############################################################
+
+-- PLACEHOLDER achievements
 INSERT IGNORE INTO Achievements (Name, Description)
 VALUES
     ('First Steps', 'Start the game for the first time.'),
@@ -99,10 +126,15 @@ VALUES
     ('Story Complete', 'Complete the main story.');
 
 
--- Example collectibles
-INSERT INTO Collectibles
-    (Name, Description, ItemType, ChapterNumber)
+-- PLACEHOLDER collectibles
+-- CollectibleID 1, 2, 3 -> put these numbers in PickupItem > Collectible Id in Unity
+INSERT IGNORE INTO Collectibles
+    (CollectibleID, Name, Description, ItemType, ChapterNumber)
 VALUES
-    ('Torn Letter', 'A mysterious piece of paper.', 'Paper', 1),
-    ('Old Photograph', 'An old photograph found in the environment.', 'Photograph', 2),
-    ('Strange Key', 'An unusual key discovered during the story.', 'Object', 3);
+    (1, 'Torn Letter', 'A mysterious piece of paper.', 'Paper', 1),
+    (2, 'Old Photograph', 'An old photograph found in the environment.', 'Photograph', 2),
+    (3, 'Strange Key', 'An unusual key discovered during the story.', 'Object', 3);
+
+-- ############################################################
+-- ##  END OF PLACEHOLDER                                     ##
+-- ############################################################

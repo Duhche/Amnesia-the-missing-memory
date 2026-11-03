@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kalis\\OneDrive\\Документи\\Amnesia The missing memory\\AmnesiaAPI\\AmnesiaAPI.csproj": {}
+    "C:\\Projects\\Amnesia-the-missing-memory\\AmnesiaAPI\\AmnesiaAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kalis\\OneDrive\\Документи\\Amnesia The missing memory\\AmnesiaAPI\\AmnesiaAPI.csproj": {
+    "C:\\Projects\\Amnesia-the-missing-memory\\AmnesiaAPI\\AmnesiaAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kalis\\OneDrive\\Документи\\Amnesia The missing memory\\AmnesiaAPI\\AmnesiaAPI.csproj",
+        "projectUniqueName": "C:\\Projects\\Amnesia-the-missing-memory\\AmnesiaAPI\\AmnesiaAPI.csproj",
         "projectName": "AmnesiaAPI",
-        "projectPath": "C:\\Users\\kalis\\OneDrive\\Документи\\Amnesia The missing memory\\AmnesiaAPI\\AmnesiaAPI.csproj",
+        "projectPath": "C:\\Projects\\Amnesia-the-missing-memory\\AmnesiaAPI\\AmnesiaAPI.csproj",
         "packagesPath": "C:\\Users\\kalis\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kalis\\OneDrive\\Документи\\Amnesia The missing memory\\AmnesiaAPI\\obj\\",
+        "outputPath": "C:\\Projects\\Amnesia-the-missing-memory\\AmnesiaAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

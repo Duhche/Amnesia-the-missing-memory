@@ -32,3 +32,45 @@ C:\Users\kalis\OneDrive\Документи\Amnesia The missing memory\AmnesiaAPI
 C:\Users\kalis\OneDrive\Документи\Amnesia The missing memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.pdb
 C:\Users\kalis\OneDrive\Документи\Amnesia The missing memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.genruntimeconfig.cache
 C:\Users\kalis\OneDrive\Документи\Amnesia The missing memory\AmnesiaAPI\obj\Debug\net8.0\ref\AmnesiaAPI.dll
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\appsettings.Development.json
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\appsettings.json
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\AmnesiaAPI.staticwebassets.endpoints.json
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\AmnesiaAPI.exe
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\AmnesiaAPI.deps.json
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\AmnesiaAPI.runtimeconfig.json
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\AmnesiaAPI.dll
+C:\Users\kalis\AppData\Local\Temp\claude\amnesia-api-build\AmnesiaAPI.pdb
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.csproj.AssemblyReference.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.AssemblyInfoInputs.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.AssemblyInfo.cs
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.csproj.CoreCompileInputs.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.sourcelink.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\scopedcss\bundle\AmnesiaAPI.styles.css
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\staticwebassets.build.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\staticwebassets.development.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\swae.build.ex.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.csproj.Up2Date
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.dll
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\refint\AmnesiaAPI.dll
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.pdb
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\AmnesiaAPI.genruntimeconfig.cache
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\obj\Debug\net8.0\ref\AmnesiaAPI.dll
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\appsettings.Development.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\AmnesiaAPI.staticwebassets.endpoints.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\appsettings.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\AmnesiaAPI.exe
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\AmnesiaAPI.deps.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\AmnesiaAPI.runtimeconfig.json
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\AmnesiaAPI.dll
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\AmnesiaAPI.pdb
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Projects\Amnesia-the-missing-memory\AmnesiaAPI\bin\Debug\net8.0\MySqlConnector.dll
