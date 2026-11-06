@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76b4d5a199d2cad41854be675f97c904, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
-  gameScene: Level1
+  gameScene: Level1(night)
   title: AMNESIA
   subtitle: The Missing Memory
 --- !u!4 &582706403

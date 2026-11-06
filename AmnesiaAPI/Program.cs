@@ -7,6 +7,25 @@ var app = builder.Build();
 string connStr = builder.Configuration.GetConnectionString("StoryGameDB")
     ?? throw new InvalidOperationException("Missing ConnectionStrings:StoryGameDB");
 
+// ---- Keep the database up to date ----
+// runs database/create_database.sql every time the API starts.
+// Safe to repeat: it only adds tables/rows that are missing.
+string sqlFile = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "database", "create_database.sql"));
+if (File.Exists(sqlFile))
+{
+    // connect without picking a database, the script creates/selects StoryGameDB itself
+    var serverOnly = new MySqlConnectionStringBuilder(connStr) { Database = "" };
+    using var setupConn = new MySqlConnection(serverOnly.ConnectionString);
+    await setupConn.OpenAsync();
+    using var setupCmd = new MySqlCommand(await File.ReadAllTextAsync(sqlFile), setupConn);
+    await setupCmd.ExecuteNonQueryAsync();
+    app.Logger.LogInformation("Database updated from {File}", sqlFile);
+}
+else
+{
+    app.Logger.LogWarning("Couldn't find {File}, database not updated", sqlFile);
+}
+
 // ---- Progress ----
 app.MapGet("/api/progress", async () =>
 {

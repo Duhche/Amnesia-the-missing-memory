@@ -7,6 +7,7 @@ public class Victim : Interactable
     [SerializeField] private string achievementOnKill = "Night 1 Complete"; // must match Achievements.Name in the database
     [SerializeField] private string achievementDescription = "You finished the first night.";
     [SerializeField] private float retryCooldown = 2f;
+    [SerializeField] private string nextScene = "Level1(day)"; // loaded after the kill, leave empty to stay
 
     public bool IsDead { get; private set; }
 
@@ -33,6 +34,8 @@ public class Victim : Interactable
             if (AchievementManager.Instance != null) AchievementManager.Instance.Unlock(achievementOnKill, achievementDescription);
             else Debug.LogWarning("No AchievementManager in the scene, achievement not shown.");
         }
+
+        if (!string.IsNullOrEmpty(nextScene)) SceneFader.GoTo(nextScene);
     }
 
     // called by KillMinigame

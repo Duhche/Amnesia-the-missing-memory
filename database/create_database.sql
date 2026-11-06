@@ -111,17 +111,22 @@ VALUES (1);
 -- Final achievements
 INSERT IGNORE INTO Achievements (Name, Description)
 VALUES
-    ('Night 1 Complete', 'You finished the first night.');
+    ('Night 1 Complete', 'You finished the first night.'),
+    ('First Inspection', 'You inspected a body for the first time.'),
+    ('Day 1 Cleared', 'You made it through the first day.');
 
 
 -- ############################################################
 -- ##  PART 2 - PLACEHOLDER  (example data, replace for final) ##
 -- ############################################################
 
+-- Removed achievements (deletes them from databases that already have them)
+DELETE FROM Achievements WHERE Name IN ('First Steps');
+
+
 -- PLACEHOLDER achievements
 INSERT IGNORE INTO Achievements (Name, Description)
 VALUES
-    ('First Steps', 'Start the game for the first time.'),
     ('Collector', 'Collect your first collectible.'),
     ('Story Complete', 'Complete the main story.');
 
@@ -133,7 +138,8 @@ INSERT IGNORE INTO Collectibles
 VALUES
     (1, 'Torn Letter', 'A mysterious piece of paper.', 'Paper', 1),
     (2, 'Old Photograph', 'An old photograph found in the environment.', 'Photograph', 2),
-    (3, 'Strange Key', 'An unusual key discovered during the story.', 'Object', 3);
+    (3, 'Strange Key', 'An unusual key discovered during the story.', 'Object', 3),
+    (4, 'Mystery Item', 'Day 1 collectible - decide what it is later.', 'Other', 1);
 
 -- ############################################################
 -- ##  END OF PLACEHOLDER                                     ##

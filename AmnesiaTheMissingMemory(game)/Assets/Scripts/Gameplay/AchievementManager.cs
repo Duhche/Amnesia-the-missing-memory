@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// one achievement as typed in the Inspector (Name must match the Achievements table)
+[System.Serializable]
+public struct AchievementInfo
+{
+    public string name;
+    public string description;
+}
+
 // Shows the "Achievement Unlocked" pop-up and saves it to the database through DbClient.
 // Put ONE of these on the "GameSystems" object. Call it from anywhere with:
 //     AchievementManager.Instance.Unlock("Night 1 Complete", "You finished the first night.");
@@ -19,10 +27,21 @@ public class AchievementManager : MonoBehaviour
     Popup? showing;
     float shownFor;
 
+    // true while a pop-up is on screen or waiting, SceneFader waits for this before changing scene
+    public bool IsBusy => showing != null || waiting.Count > 0;
+
     void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(this); return; }
         Instance = this;
+    }
+
+    // unlocks a list typed in the Inspector (used by Inspectable and PickupItem)
+    public static void UnlockAll(AchievementInfo[] list)
+    {
+        if (list == null || list.Length == 0) return;
+        if (Instance == null) { Debug.LogWarning("No AchievementManager in the scene, achievements not shown."); return; }
+        foreach (AchievementInfo a in list) Instance.Unlock(a.name, a.description);
     }
 
     public void Unlock(string achievementName, string description = "")

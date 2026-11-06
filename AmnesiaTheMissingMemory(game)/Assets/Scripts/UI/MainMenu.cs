@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 // PLACEHOLDER: plain OnGUI look, replace with a proper menu design later.
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] private string gameScene = "Level1"; // must be in File > Build Profiles > Scene List
+    [SerializeField] private string gameScene = "Level1(night)"; // must be in File > Build Profiles > Scene List
     [SerializeField] private string title = "AMNESIA";
     [SerializeField] private string subtitle = "The Missing Memory";
 
@@ -76,7 +76,7 @@ public class MainMenu : MonoBehaviour
         // buttons
         float w = 380 * s, h = 66 * s, y = Screen.height * 0.56f;
         if (Button(new Rect(cx - w / 2, y, w, h), "START", false))
-            SceneManager.LoadScene(gameScene);
+            SceneFader.GoTo(gameScene);
         if (Button(new Rect(cx - w / 2, y + h + 20 * s, w, h), "ACHIEVEMENTS", true))
             OpenAchievements();
     }
