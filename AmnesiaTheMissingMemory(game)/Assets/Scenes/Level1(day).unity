@@ -514,7 +514,7 @@ MonoBehaviour:
   - name: Day 1 Cleared
     description: You made it through the first day.
   completesLevel: 1
-  nextScene: MainMenu
+  nextScene: Level2(night)
 --- !u!136 &988538344
 CapsuleCollider:
   m_ObjectHideFlags: 0

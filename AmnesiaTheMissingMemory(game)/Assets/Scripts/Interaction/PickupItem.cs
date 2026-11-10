@@ -18,6 +18,7 @@ public class PickupItem : Interactable
             else Debug.LogWarning("No DbClient in the scene, pickup not saved.");
         }
 
+        PlayerInventory.Add(itemName);
         AchievementManager.UnlockAll(achievements);
         interactor.ShowMessage($"Picked up {itemName}");
         // PLACEHOLDER: add a pickup sound / inventory here for the final version

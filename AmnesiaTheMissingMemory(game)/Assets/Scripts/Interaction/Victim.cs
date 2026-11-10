@@ -1,6 +1,7 @@
 using UnityEngine;
 
-// A victim the killer can attack with E. Starts the space-mash KillMinigame.
+// A victim the killer can attack with E. Starts the KillMinigame:
+// mash space with bare hands, or the timing strike if the player picked up the knife.
 // Win = victim dies and the achievement unlocks. Lose = victim breaks free, try again after a cooldown.
 public class Victim : Interactable
 {
@@ -9,31 +10,41 @@ public class Victim : Interactable
     [SerializeField] private float retryCooldown = 2f;
     [SerializeField] private string nextScene = "Level1(day)"; // loaded after the kill, leave empty to stay
 
+    [Header("Knife")]
+    [SerializeField] private string weaponItem = "Knife"; // PickupItem name that switches to the knife minigame
+    [SerializeField] private string knifeAchievement = "Cold Steel";
+    [SerializeField] private string knifeAchievementDescription = "Kill someone with the knife.";
+
     public bool IsDead { get; private set; }
 
     float nextAttemptTime;
 
     void Reset() => promptText = "Kill";
 
+    bool HasKnife => !string.IsNullOrEmpty(weaponItem) && PlayerInventory.Has(weaponItem);
+
+    public override string Prompt => HasKnife ? $"{promptText} with {weaponItem}" : promptText;
+
     public override bool CanInteract => !IsDead && Time.time >= nextAttemptTime
                                         && KillMinigame.Instance != null && !KillMinigame.Instance.IsRunning;
 
     public override void Interact(PlayerInteractor interactor)
     {
-        KillMinigame.Instance.Begin(this, interactor);
+        KillMinigame.Instance.Begin(this, interactor, HasKnife);
     }
 
     // called by KillMinigame
-    public void OnKilled()
+    public void OnKilled(bool withKnife)
     {
         IsDead = true;
         PlayDeath();
 
-        if (!string.IsNullOrEmpty(achievementOnKill))
+        if (AchievementManager.Instance != null)
         {
-            if (AchievementManager.Instance != null) AchievementManager.Instance.Unlock(achievementOnKill, achievementDescription);
-            else Debug.LogWarning("No AchievementManager in the scene, achievement not shown.");
+            if (!string.IsNullOrEmpty(achievementOnKill)) AchievementManager.Instance.Unlock(achievementOnKill, achievementDescription);
+            if (withKnife && !string.IsNullOrEmpty(knifeAchievement)) AchievementManager.Instance.Unlock(knifeAchievement, knifeAchievementDescription);
         }
+        else Debug.LogWarning("No AchievementManager in the scene, achievement not shown.");
 
         if (!string.IsNullOrEmpty(nextScene)) SceneFader.GoTo(nextScene);
     }
