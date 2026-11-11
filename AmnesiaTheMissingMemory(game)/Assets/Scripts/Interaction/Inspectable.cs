@@ -1,13 +1,13 @@
 using UnityEngine;
 
-// Something the player looks at closely with E, like the victim's body the next day.
-// Shows a message, unlocks achievements and can finish the level.
+// something you look at closely with E, like the body during the day.
+// shows a message, gives achievements and can end the level.
 public class Inspectable : Interactable
 {
     [SerializeField] [TextArea] private string message = "";
-    [SerializeField] private AchievementInfo[] achievements; // unlocked when inspected
+    [SerializeField] private AchievementInfo[] achievements; // achievements you get for inspecting it
     [SerializeField] private bool completesLevel = false;
-    [SerializeField] private string nextScene = "MainMenu";  // loaded when completesLevel is ticked
+    [SerializeField] private string nextScene = "MainMenu";  // where to go after, if completesLevel is on
 
     bool inspected;
 
@@ -22,7 +22,7 @@ public class Inspectable : Interactable
 
         AchievementManager.UnlockAll(achievements);
 
-        // PLACEHOLDER: add a close-up camera / clue screen here for the final version
+        // placeholder: maybe a close up camera or clue screen here later
         if (completesLevel && !string.IsNullOrEmpty(nextScene)) SceneFader.GoTo(nextScene);
     }
 }

@@ -25,23 +25,43 @@ public class AchievementData
     public string name;
     public string description;
     public bool isUnlocked;
-    public string unlockedAt; // empty when locked
+    public string unlockedAt; // empty if it's still locked
 }
 
-// JsonUtility can't read a bare [ ... ] list, so the response gets wrapped in this
 [System.Serializable]
 class AchievementList
 {
     public AchievementData[] items;
 }
 
-// Talks to AmnesiaAPI, which talks to the MySQL database.
-// Put ONE of these on the "GameSystems" object. Other scripts use DbClient.Instance.
+[System.Serializable]
+public class SaveData
+{
+    public int slot;
+    public string currentLevel; // scene name, like "Level1(day)"
+    public string createdAt;
+    public string lastPlayed;
+    public int achievementsUnlocked;
+    public int collectiblesFound;
+}
+
+[System.Serializable]
+class SaveList
+{
+    public SaveData[] items;
+}
+
+[System.Serializable]
+class SaveUpdateRequest
+{
+    public string currentLevel;
+}
+
+// connects to AmnesiaAPI which connects to the MySQL database.
 public class DbClient : MonoBehaviour
 {
     public static DbClient Instance { get; private set; }
 
-    // the "http" address AmnesiaAPI prints when it starts (see AmnesiaAPI/Properties/launchSettings.json)
     [SerializeField] private string baseUrl = "http://localhost:5112";
 
     void Awake()
@@ -51,7 +71,7 @@ public class DbClient : MonoBehaviour
         baseUrl = baseUrl.TrimEnd('/');
     }
 
-    // quick connection test so you can see in the Console if the database is linked
+    // test to see if the Console is linked with the database
     void Start()
     {
         GetProgress(p =>
@@ -71,26 +91,56 @@ public class DbClient : MonoBehaviour
         StartCoroutine(Send("PUT", "/api/progress", JsonUtility.ToJson(data), req => done?.Invoke(req != null)));
     }
 
+    // marks a collectible as found for the save you're playing right now
     public void CollectItem(int id, Action<bool> done = null)
     {
-        StartCoroutine(Send("POST", $"/api/collectibles/{id}/collect", null, req => done?.Invoke(req != null)));
+        StartCoroutine(Send("POST", $"/api/saves/{SaveSession.Slot}/collectibles/{id}/collect", null, req => done?.Invoke(req != null)));
     }
 
-    // done gets every achievement, or null if the API couldn't be reached
-    public void GetAchievements(Action<AchievementData[]> done)
+    // ---- save slots ----
+
+    // gets the saves that exist, or null if the API isn't running
+    public void GetSaves(Action<SaveData[]> done)
     {
-        StartCoroutine(Send("GET", "/api/achievements", null, req =>
+        StartCoroutine(Send("GET", "/api/saves", null, req =>
+            done?.Invoke(req == null ? null
+                : JsonUtility.FromJson<SaveList>("{\"items\":" + req.downloadHandler.text + "}").items)));
+    }
+
+    public void CreateSave(int slot, Action<bool> done = null)
+    {
+        StartCoroutine(Send("POST", $"/api/saves/{slot}", null, req => done?.Invoke(req != null)));
+    }
+
+    public void UpdateSaveLevel(int slot, string level, Action<bool> done = null)
+    {
+        string body = JsonUtility.ToJson(new SaveUpdateRequest { currentLevel = level });
+        StartCoroutine(Send("PUT", $"/api/saves/{slot}", body, req => done?.Invoke(req != null)));
+    }
+
+    public void DeleteSave(int slot, Action<bool> done = null)
+    {
+        StartCoroutine(Send("DELETE", $"/api/saves/{slot}", null, req => done?.Invoke(req != null)));
+    }
+
+    // ---- achievements (each save has its own) ----
+
+    // gets all the achievements for one save, or null if the API isn't running
+    public void GetAchievements(int slot, Action<AchievementData[]> done)
+    {
+        StartCoroutine(Send("GET", $"/api/saves/{slot}/achievements", null, req =>
             done?.Invoke(req == null ? null
                 : JsonUtility.FromJson<AchievementList>("{\"items\":" + req.downloadHandler.text + "}").items)));
     }
 
+    // unlocks it for the save you're playing right now
     public void UnlockAchievement(string achievementName, Action<bool> done = null)
     {
         string body = JsonUtility.ToJson(new AchievementUnlockRequest { name = achievementName });
-        StartCoroutine(Send("POST", "/api/achievements/unlock", body, req => done?.Invoke(req != null)));
+        StartCoroutine(Send("POST", $"/api/saves/{SaveSession.Slot}/achievements/unlock", body, req => done?.Invoke(req != null)));
     }
 
-    // sends one request; done gets the finished request, or null if it failed
+    // sends a request to the API, gives back null if it didn't work
     IEnumerator Send(string method, string path, string json, Action<UnityWebRequest> done)
     {
         using UnityWebRequest req = new UnityWebRequest(baseUrl + path, method);

@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Looks at what the camera points at. If it's an Interactable in range,
-// shows "[E] ..." on screen and calls Interact() when E is pressed.
-// Put it on the player.
+// checks what the player is looking at. if it's something you can use,
+// it shows "[E] ..." on screen and uses it when you press E.
+// goes on the player.
 public class PlayerInteractor : MonoBehaviour
 {
-    [SerializeField] private Transform cameraTransform; // leave empty to use the Main Camera
-    [SerializeField] private float interactRange = 2.5f; // how far from the eyes you can reach
-    [SerializeField] private float aimRadius = 0.2f;     // bigger = easier to aim at small items
+    [SerializeField] private Transform cameraTransform; // leave empty and it uses the main camera
+    [SerializeField] private float interactRange = 2.5f; // how far you can reach
+    [SerializeField] private float aimRadius = 0.2f;     // bigger makes small stuff easier to aim at
     [SerializeField] private float messageSeconds = 2.5f;
 
     public Interactable Current { get; private set; }
@@ -30,7 +30,7 @@ public class PlayerInteractor : MonoBehaviour
             Current.Interact(this);
     }
 
-    // short text in the middle of the screen, e.g. "Picked up Torn Letter"
+    // shows a short text in the middle of the screen, like "Picked up Knife"
     public void ShowMessage(string text)
     {
         message = text;
@@ -41,16 +41,17 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (cameraTransform == null) return null;
 
+        // shoot a thin invisible tube forward from the camera and see what it hits
         RaycastHit[] hits = Physics.SphereCastAll(cameraTransform.position, aimRadius, cameraTransform.forward,
                                                   interactRange, ~0, QueryTriggerInteraction.Collide);
-        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance)); // closest first
 
         foreach (RaycastHit hit in hits)
         {
-            if (hit.transform.IsChildOf(transform)) continue; // skip our own body
+            if (hit.transform.IsChildOf(transform)) continue; // ignore the player's own body
 
             Interactable target = hit.collider.GetComponentInParent<Interactable>();
-            if (target == null) return null; // a wall or something else is in the way
+            if (target == null) return null; // hit a wall or something first
             return target.CanInteract ? target : null;
         }
         return null;
@@ -63,7 +64,7 @@ public class PlayerInteractor : MonoBehaviour
 
         if (!GameState.InputLocked)
         {
-            // small dot crosshair, turns bigger when something can be used
+            // crosshair dot, gets bigger when you can use something
             float dot = (Current != null ? 8 : 4) * s;
             GameUI.Fill(new Rect(center.x - dot / 2, center.y - dot / 2, dot, dot), new Color(1, 1, 1, 0.8f));
         }

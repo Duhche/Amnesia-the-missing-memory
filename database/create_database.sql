@@ -1,26 +1,12 @@
+-- part 1: final
 
--- ============================================================
---  create_database.sql
---  Safe to run again at any time (nothing gets duplicated).
---
---  The file has two parts:
---    PART 1 - FINAL:       tables + real game data (keep these)
---    PART 2 - PLACEHOLDER: example rows for testing
---                          (replace/delete for the final version)
--- ============================================================
-
-
--- ############################################################
--- ##  PART 1 - FINAL  (stays in the finished game)          ##
--- ############################################################
-
--- Create the database
+-- make the database
 CREATE DATABASE IF NOT EXISTS StoryGameDB;
 
 USE StoryGameDB;
 
 
--- 1. SETTINGS
+-- 1. SETTINGS (volume, graphics, language). only ever has one row
 CREATE TABLE IF NOT EXISTS Settings (
     SettingsID INT PRIMARY KEY DEFAULT 1,
     MasterVolume DECIMAL(3,2) NOT NULL DEFAULT 1.00,
@@ -42,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Settings (
 );
 
 
--- 2. GAME PROGRESS
+-- 2. GAME PROGRESS (where the player is). only ever has one row
 CREATE TABLE IF NOT EXISTS GameProgress (
     ProgressID INT PRIMARY KEY DEFAULT 1,
     CurrentChapter INT NOT NULL DEFAULT 1,
@@ -59,8 +45,9 @@ CREATE TABLE IF NOT EXISTS GameProgress (
 
 
 -- 3. ACHIEVEMENTS
---    Unity unlocks these by Name, so the Name here must match
---    the text typed in the Inspector (e.g. Victim > Achievement On Kill).
+--    the game unlocks these by name, so the name has to match
+--    what's typed in Unity exactly (like Victim > Achievement On Kill).
+--    IsUnlocked and UnlockedAt aren't used anymore, each save has its own in SaveAchievements
 CREATE TABLE IF NOT EXISTS Achievements (
     AchievementID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL UNIQUE,
@@ -70,7 +57,7 @@ CREATE TABLE IF NOT EXISTS Achievements (
 );
 
 
--- 4. PLAY SESSIONS
+-- 4. PLAY SESSIONS (one row per time you play). not used yet
 CREATE TABLE IF NOT EXISTS PlaySessions (
     SessionID INT AUTO_INCREMENT PRIMARY KEY,
     StartTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -80,7 +67,8 @@ CREATE TABLE IF NOT EXISTS PlaySessions (
 );
 
 
--- 5. COLLECTIBLES
+-- 5. COLLECTIBLES (items you can find)
+--    IsCollected and CollectedAt aren't used anymore, each save has its own in SaveCollectibles
 CREATE TABLE IF NOT EXISTS Collectibles (
     CollectibleID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
@@ -98,17 +86,64 @@ CREATE TABLE IF NOT EXISTS Collectibles (
 );
 
 
--- Insert default settings
+-- 6. SAVE SLOTS (the 3 saves in the main menu and which level each one is on)
+CREATE TABLE IF NOT EXISTS SaveSlots (
+    SlotNumber INT PRIMARY KEY,
+    CurrentLevel VARCHAR(50) NOT NULL DEFAULT 'Level1(night)',
+    CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    LastPlayed DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_slot_number
+        CHECK (SlotNumber BETWEEN 1 AND 3)
+);
+
+
+-- 7. SAVE ACHIEVEMENTS (which achievements each save has unlocked)
+--    a new save has no rows here, so everything starts locked.
+--    deleting a save deletes its rows too (ON DELETE CASCADE)
+CREATE TABLE IF NOT EXISTS SaveAchievements (
+    SlotNumber INT NOT NULL,
+    AchievementID INT NOT NULL,
+    UnlockedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (SlotNumber, AchievementID),
+
+    CONSTRAINT fk_save_achievements_slot
+        FOREIGN KEY (SlotNumber) REFERENCES SaveSlots(SlotNumber) ON DELETE CASCADE,
+
+    CONSTRAINT fk_save_achievements_achievement
+        FOREIGN KEY (AchievementID) REFERENCES Achievements(AchievementID) ON DELETE CASCADE
+);
+
+
+-- 8. SAVE COLLECTIBLES (which collectibles each save has found)
+--    works the same as SaveAchievements: new save = nothing found, delete save = rows go too
+CREATE TABLE IF NOT EXISTS SaveCollectibles (
+    SlotNumber INT NOT NULL,
+    CollectibleID INT NOT NULL,
+    CollectedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (SlotNumber, CollectibleID),
+
+    CONSTRAINT fk_save_collectibles_slot
+        FOREIGN KEY (SlotNumber) REFERENCES SaveSlots(SlotNumber) ON DELETE CASCADE,
+
+    CONSTRAINT fk_save_collectibles_collectible
+        FOREIGN KEY (CollectibleID) REFERENCES Collectibles(CollectibleID) ON DELETE CASCADE
+);
+
+
+-- default settings row
 INSERT IGNORE INTO Settings (SettingsID)
 VALUES (1);
 
 
--- Insert initial game progress
+-- starting progress row
 INSERT IGNORE INTO GameProgress (ProgressID)
 VALUES (1);
 
 
--- Final achievements
+-- the real achievements
 INSERT IGNORE INTO Achievements (Name, Description)
 VALUES
     ('Night 1 Complete', 'You finished the first night.'),
@@ -119,23 +154,26 @@ VALUES
     ('Day 2 Cleared', 'You made it through the second day.');
 
 
--- ############################################################
--- ##  PART 2 - PLACEHOLDER  (example data, replace for final) ##
--- ############################################################
+-- part 2: placeholder (test data, replace later)
 
--- Removed achievements (deletes them from databases that already have them)
+-- achievements we got rid of (deletes them if they're still in the database)
 DELETE FROM Achievements WHERE Name IN ('First Steps');
 
 
--- PLACEHOLDER achievements
+-- test achievements
 INSERT IGNORE INTO Achievements (Name, Description)
 VALUES
     ('Collector', 'Collect your first collectible.'),
     ('Story Complete', 'Complete the main story.');
 
 
--- PLACEHOLDER collectibles
--- CollectibleID 1, 2, 3 -> put these numbers in PickupItem > Collectible Id in Unity
+-- old copies of the example collectibles from when this file used to make doubles.
+-- they took ids 4-6, so the Mystery Items couldn't get theirs
+DELETE FROM Collectibles
+WHERE CollectibleID IN (4, 5, 6) AND Name IN ('Torn Letter', 'Old Photograph', 'Strange Key');
+
+-- test collectibles
+-- the number at the start goes in PickupItem > Collectible Id in Unity
 INSERT IGNORE INTO Collectibles
     (CollectibleID, Name, Description, ItemType, ChapterNumber)
 VALUES
@@ -144,7 +182,3 @@ VALUES
     (3, 'Strange Key', 'An unusual key discovered during the story.', 'Object', 3),
     (4, 'Mystery Item', 'Day 1 collectible - decide what it is later.', 'Other', 1),
     (5, 'Mystery Item 2', 'Day 2 collectible - decide what it is later.', 'Other', 2);
-
--- ############################################################
--- ##  END OF PLACEHOLDER                                     ##
--- ############################################################

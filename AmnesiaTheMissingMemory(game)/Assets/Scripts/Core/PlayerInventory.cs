@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// What the player is carrying. Filled by PickupItem (by item name).
-// Emptied every time a new scene loads, so items have to be picked up again in each level.
-// PLACEHOLDER: no inventory screen yet.
+// keeps track of what the player picked up (by item name).
+// gets emptied every new level, so you have to pick things up again.
+// placeholder: no inventory screen yet.
 public static class PlayerInventory
 {
     static readonly HashSet<string> items = new HashSet<string>();
@@ -13,14 +13,15 @@ public static class PlayerInventory
     public static bool Has(string itemName) => items.Contains(itemName);
     public static void Clear() => items.Clear();
 
-    // runs every time you press Play, even with domain reload turned off
+    // runs every time you hit Play
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void Init()
     {
         items.Clear();
-        SceneManager.sceneLoaded -= OnSceneLoaded; // don't subscribe twice
+        SceneManager.sceneLoaded -= OnSceneLoaded; // so it doesn't get added twice
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    // new scene = empty pockets
     static void OnSceneLoaded(Scene scene, LoadSceneMode mode) => items.Clear();
 }

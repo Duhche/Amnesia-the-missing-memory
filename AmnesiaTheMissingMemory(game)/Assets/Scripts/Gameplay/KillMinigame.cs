@@ -1,24 +1,24 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// The kill pop-up that runs when the killer attacks a Victim. Two versions:
-//  - bare hands: MASH space. Each press fills the bar, it slowly drains. Fill it before the timer runs out.
-//  - with the knife: a line slides back and forth, press space while it's inside the red zone.
-// Put ONE of these on a "GameSystems" object in the scene.
+// the kill pop-up when you attack a victim. two kinds:
+// no knife: mash space to fill the bar before time runs out.
+// knife: a line moves back and forth, hit space when it's in the red zone.
+// put one on the GameSystems object.
 public class KillMinigame : MonoBehaviour
 {
     public static KillMinigame Instance { get; private set; }
 
     [Header("Bare hands (mash)")]
-    [SerializeField] private float pressPower = 0.1f;      // how much one press fills (0-1)
+    [SerializeField] private float pressPower = 0.1f;      // how much one press fills
     [SerializeField] private float drainPerSecond = 0.25f; // the victim fighting back
     [SerializeField] private float startFill = 0.2f;
     [SerializeField] private float timeLimit = 6f;
 
     [Header("Knife (timing)")]
-    [SerializeField] private float lineSpeed = 1.2f;  // bar widths per second
-    [SerializeField] private float zoneWidth = 0.15f; // size of the red zone (0-1 of the bar)
-    [SerializeField] private int allowedMisses = 2;   // misses before the victim breaks free
+    [SerializeField] private float lineSpeed = 1.2f;  // how fast the line moves
+    [SerializeField] private float zoneWidth = 0.15f; // how big the red zone is
+    [SerializeField] private int allowedMisses = 2;   // misses before they break free
 
     public bool IsRunning => victim != null;
 
@@ -26,12 +26,12 @@ public class KillMinigame : MonoBehaviour
     PlayerInteractor interactor;
     bool withKnife;
 
-    // mash
+    // mash stuff
     float fill;
     float timeLeft;
-    float pulse; // makes the bar flash on each press
+    float pulse; // flash when you press
 
-    // knife
+    // knife stuff
     float linePos;
     float lineDir = 1;
     float zoneStart;
@@ -56,16 +56,16 @@ public class KillMinigame : MonoBehaviour
 
         linePos = 0;
         lineDir = 1;
-        zoneStart = Random.Range(0.35f, 0.85f - zoneWidth); // never right at the start
+        zoneStart = Random.Range(0.35f, 0.85f - zoneWidth); // random spot, but not right at the start
         misses = 0;
         missFlash = 0;
 
-        GameState.InputLocked = true; // freeze walking and looking during the struggle
+        GameState.InputLocked = true; // player can't move during the fight
     }
 
     void Update()
     {
-        if (!IsRunning) return;
+        if (!IsRunning || PauseMenu.IsPaused) return; // space presses don't count while paused
 
         Keyboard kb = Keyboard.current;
         bool space = kb != null && kb.spaceKey.wasPressedThisFrame;
@@ -92,7 +92,7 @@ public class KillMinigame : MonoBehaviour
 
     void UpdateKnife(bool space)
     {
-        // slide back and forth across the bar
+        // move the line and bounce at the ends
         linePos += lineDir * lineSpeed * Time.deltaTime;
         if (linePos >= 1f) { linePos = 1f; lineDir = -1; }
         if (linePos <= 0f) { linePos = 0f; lineDir = 1; }
@@ -100,12 +100,14 @@ public class KillMinigame : MonoBehaviour
 
         if (!space) return;
 
+        // hit
         if (linePos >= zoneStart && linePos <= zoneStart + zoneWidth)
         {
             Finish(true);
             return;
         }
 
+        // miss
         misses++;
         missFlash = 1f;
         if (misses > allowedMisses) Finish(false);
@@ -121,18 +123,19 @@ public class KillMinigame : MonoBehaviour
         else v.OnEscaped(interactor);
     }
 
+    // if this gets turned off mid fight, give the player control back
     void OnDisable()
     {
         if (IsRunning) { victim = null; GameState.InputLocked = false; }
     }
 
-    // PLACEHOLDER: simple OnGUI pop-up, replace with proper UI art for the final version
+    // placeholder: basic look, make it nicer later
     void OnGUI()
     {
         if (!IsRunning) return;
         float s = GameUI.Scale;
 
-        GameUI.Fill(new Rect(0, 0, Screen.width, Screen.height), new Color(0.2f, 0, 0, 0.35f)); // red tint
+        GameUI.Fill(new Rect(0, 0, Screen.width, Screen.height), new Color(0.2f, 0, 0, 0.35f)); // red tint over the screen
 
         Rect panel = new Rect(Screen.width / 2f - 260 * s, Screen.height / 2f - 100 * s, 520 * s, 200 * s);
         GameUI.Fill(panel, new Color(0, 0, 0, 0.85f));
@@ -160,7 +163,7 @@ public class KillMinigame : MonoBehaviour
         GUI.Label(new Rect(panel.x, panel.y + 15 * s, panel.width, 50 * s), "STRIKE  [SPACE]!",
                   GameUI.Text(40, TextAnchor.MiddleCenter, FontStyle.Bold));
 
-        // bar flashes red after a miss
+        // bar goes red for a sec when you miss
         GameUI.Fill(bar, Color.Lerp(new Color(0.25f, 0.25f, 0.25f), new Color(0.5f, 0.1f, 0.1f), missFlash));
         GameUI.Fill(new Rect(bar.x + bar.width * zoneStart, bar.y, bar.width * zoneWidth, bar.height),
                     new Color(0.8f, 0.05f, 0.05f));

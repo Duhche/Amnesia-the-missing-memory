@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// First person camera: sits at the player's eyes and looks around with the mouse.
-// Put it on the Main Camera (NOT as a child of the player) and drag the player into "Player".
+// first person camera, sits at the player's eyes and looks around with the mouse.
+// goes on the Main Camera (not inside the player) with the player dragged into "Player".
 public class FollowPlayer : MonoBehaviour
 {
     [SerializeField] private Transform player;
-    [SerializeField] private Vector3 offset = new Vector3(0, 0.6f, 0); // eye height above the player's center
+    [SerializeField] private Vector3 offset = new Vector3(0, 0.6f, 0); // how high the eyes are
     [SerializeField] private float mouseSensitivity = 0.1f;
 
     private float yaw;
@@ -23,15 +23,15 @@ public class FollowPlayer : MonoBehaviour
         Mouse mouse = Mouse.current;
         if (mouse != null && !GameState.InputLocked)
         {
-            // Esc frees the cursor in the editor, click the game view to grab it again
+            // esc lets the mouse go in the editor, clicking grabs it again
             if (mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked) LockCursor();
 
             Vector2 look = mouse.delta.ReadValue() * mouseSensitivity;
             yaw += look.x;
-            pitch = Mathf.Clamp(pitch - look.y, -85f, 85f);
+            pitch = Mathf.Clamp(pitch - look.y, -85f, 85f); // can't look so far up or down that it flips
         }
 
-        // the player's body turns to match the camera in PlayerHandler
+        // PlayerHandler turns the body to match this
         transform.rotation = Quaternion.Euler(pitch, yaw, 0);
         transform.position = player.position + offset;
     }

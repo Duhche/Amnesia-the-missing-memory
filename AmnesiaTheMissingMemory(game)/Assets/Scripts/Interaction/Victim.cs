@@ -1,17 +1,17 @@
 using UnityEngine;
 
-// A victim the killer can attack with E. Starts the KillMinigame:
-// mash space with bare hands, or the timing strike if the player picked up the knife.
-// Win = victim dies and the achievement unlocks. Lose = victim breaks free, try again after a cooldown.
+// the person you kill at night. pressing E starts the kill minigame.
+// no knife = mash space, with the knife = timing strike.
+// win and they die, lose and they break free for a bit.
 public class Victim : Interactable
 {
-    [SerializeField] private string achievementOnKill = "Night 1 Complete"; // must match Achievements.Name in the database
+    [SerializeField] private string achievementOnKill = "Night 1 Complete"; // has to match the name in the database
     [SerializeField] private string achievementDescription = "You finished the first night.";
     [SerializeField] private float retryCooldown = 2f;
-    [SerializeField] private string nextScene = "Level1(day)"; // loaded after the kill, leave empty to stay
+    [SerializeField] private string nextScene = "Level1(day)"; // where to go after the kill, empty = stay
 
     [Header("Knife")]
-    [SerializeField] private string weaponItem = "Knife"; // PickupItem name that switches to the knife minigame
+    [SerializeField] private string weaponItem = "Knife"; // the pickup name that counts as the knife
     [SerializeField] private string knifeAchievement = "Cold Steel";
     [SerializeField] private string knifeAchievementDescription = "Kill someone with the knife.";
 
@@ -23,6 +23,7 @@ public class Victim : Interactable
 
     bool HasKnife => !string.IsNullOrEmpty(weaponItem) && PlayerInventory.Has(weaponItem);
 
+    // says "Kill with Knife" when you have it
     public override string Prompt => HasKnife ? $"{promptText} with {weaponItem}" : promptText;
 
     public override bool CanInteract => !IsDead && Time.time >= nextAttemptTime
@@ -33,7 +34,7 @@ public class Victim : Interactable
         KillMinigame.Instance.Begin(this, interactor, HasKnife);
     }
 
-    // called by KillMinigame
+    // the minigame calls this when you win
     public void OnKilled(bool withKnife)
     {
         IsDead = true;
@@ -49,15 +50,15 @@ public class Victim : Interactable
         if (!string.IsNullOrEmpty(nextScene)) SceneFader.GoTo(nextScene);
     }
 
-    // called by KillMinigame
+    // the minigame calls this when you lose
     public void OnEscaped(PlayerInteractor interactor)
     {
         nextAttemptTime = Time.time + retryCooldown;
         interactor.ShowMessage("They broke free!");
     }
 
-    // PLACEHOLDER: replace with a death animation, sound and blood effect for the final version.
-    // For now the victim falls over and turns dark red.
+    // placeholder: for now they just fall over and turn dark red.
+    // swap this for a real death animation, sound and blood later.
     void PlayDeath()
     {
         Renderer rend = GetComponentInChildren<Renderer>();
@@ -67,7 +68,7 @@ public class Victim : Interactable
 
         if (rend != null)
         {
-            transform.position += Vector3.up * (groundY - rend.bounds.min.y); // lie on the floor, not float
+            transform.position += Vector3.up * (groundY - rend.bounds.min.y); // put them on the floor so they don't float
             rend.material.color = new Color(0.35f, 0.02f, 0.02f);
         }
 

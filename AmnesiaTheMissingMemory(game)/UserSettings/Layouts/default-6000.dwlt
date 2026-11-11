@@ -696,26 +696,17 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -9376
-      - m_Data: -9132
-      - m_Data: -8888
-      - m_Data: -8642
-      - m_Data: -7390
-      - m_Data: -7128
-      - m_Data: -6884
-      - m_Data: -6638
-      - m_Data: -6390
-      - m_Data: -5720
-      - m_Data: -5482
-      - m_Data: -5244
-      - m_Data: -5006
-      - m_Data: -4766
-      - m_Data: -3508
-      - m_Data: -3270
-      - m_Data: -3026
-      - m_Data: -2786
-      - m_Data: -2544
-      - m_Data: -1322
+      - m_Data: -7340
+      - m_Data: -7094
+      - m_Data: -6850
+      - m_Data: -6604
+      - m_Data: -5286
+      - m_Data: -4568
+      - m_Data: -4324
+      - m_Data: -4080
+      - m_Data: -3832
+      - m_Data: -2116
+      - m_Data: -1298
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1379,9 +1370,9 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 79}
     m_SelectedIDs:
-    - m_Data: 46160
+    - m_Data: 46164
     m_LastClickedID:
-      m_Data: 46160
+      m_Data: 46164
     m_ExpandedIDs:
     - m_Data: 0
     - m_Data: 45836

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmnesiaAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8cf89b21c2f1888a1de42ec8b27fcf7495aee77")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+53ab468dc84692ffad9b0182818c74992349a594")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmnesiaAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmnesiaAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,12 +1,12 @@
 using UnityEngine;
 
-// Shared flags that any script can read.
+// stuff every script can check.
 public static class GameState
 {
-    // true while a minigame (or later a cutscene/menu) is open: blocks walking, looking and interacting
+    // when this is true the player can't walk, look around or use things (like during the kill minigame)
     public static bool InputLocked;
 
-    // resets the flag every time you press Play, even with domain reload turned off
+    // turns it back off every time you hit Play
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetOnPlay() => InputLocked = false;
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// one achievement as typed in the Inspector (Name must match the Achievements table)
+// one achievement typed in the Inspector (the name has to match the database)
 [System.Serializable]
 public struct AchievementInfo
 {
@@ -9,10 +9,9 @@ public struct AchievementInfo
     public string description;
 }
 
-// Shows the "Achievement Unlocked" pop-up and saves it to the database through DbClient.
-// Put ONE of these on the "GameSystems" object. Call it from anywhere with:
+// shows the "Achievement Unlocked" pop-up and saves it to the database.
+// put one on the GameSystems object. use it from anywhere like this:
 //     AchievementManager.Instance.Unlock("Night 1 Complete", "You finished the first night.");
-// The name must match a row in the Achievements table.
 public class AchievementManager : MonoBehaviour
 {
     public static AchievementManager Instance { get; private set; }
@@ -23,11 +22,11 @@ public class AchievementManager : MonoBehaviour
     struct Popup { public string name; public string description; }
 
     readonly HashSet<string> unlockedThisSession = new HashSet<string>();
-    readonly Queue<Popup> waiting = new Queue<Popup>();
+    readonly Queue<Popup> waiting = new Queue<Popup>(); // pop-ups waiting their turn
     Popup? showing;
     float shownFor;
 
-    // true while a pop-up is on screen or waiting, SceneFader waits for this before changing scene
+    // true while a pop-up is showing or waiting. SceneFader waits for this before changing scene
     public bool IsBusy => showing != null || waiting.Count > 0;
 
     void Awake()
@@ -36,7 +35,7 @@ public class AchievementManager : MonoBehaviour
         Instance = this;
     }
 
-    // unlocks a list typed in the Inspector (used by Inspectable and PickupItem)
+    // unlocks a whole list (PickupItem and Inspectable use this)
     public static void UnlockAll(AchievementInfo[] list)
     {
         if (list == null || list.Length == 0) return;
@@ -46,11 +45,14 @@ public class AchievementManager : MonoBehaviour
 
     public void Unlock(string achievementName, string description = "")
     {
-        if (!unlockedThisSession.Add(achievementName)) return; // don't show the same one twice
+        if (!unlockedThisSession.Add(achievementName)) return; // already got it this run
 
         waiting.Enqueue(new Popup { name = achievementName, description = description });
 
-        if (DbClient.Instance != null)
+        // save it in the database for the save you're playing
+        if (SaveSession.Slot == 0)
+            Debug.Log($"Achievement '{achievementName}' not saved, you're not playing on a save slot.");
+        else if (DbClient.Instance != null)
             DbClient.Instance.UnlockAchievement(achievementName, ok =>
             {
                 if (!ok) Debug.LogWarning($"Achievement '{achievementName}' was shown but NOT saved (is the API running?)");
@@ -59,6 +61,7 @@ public class AchievementManager : MonoBehaviour
             Debug.LogWarning("No DbClient in the scene, achievement not saved.");
     }
 
+    // shows the pop-ups one at a time
     void Update()
     {
         if (showing == null)
@@ -66,20 +69,20 @@ public class AchievementManager : MonoBehaviour
             if (waiting.Count == 0) return;
             showing = waiting.Dequeue();
             shownFor = 0;
-            // PLACEHOLDER: play an achievement sound here
+            // placeholder: play a sound here later
         }
 
         shownFor += Time.unscaledDeltaTime;
         if (shownFor > showSeconds) showing = null;
     }
 
-    // PLACEHOLDER: simple OnGUI pop-up, replace with proper UI art for the final version
+    // placeholder: basic pop-up look, make it nicer later
     void OnGUI()
     {
         if (showing == null) return;
         float s = GameUI.Scale;
 
-        // slide in from the right, slide out at the end
+        // slides in from the right and back out at the end
         float t = Mathf.Min(shownFor, showSeconds - shownFor) / slideSeconds;
         float slide = Mathf.SmoothStep(0, 1, Mathf.Clamp01(t));
 
@@ -87,7 +90,7 @@ public class AchievementManager : MonoBehaviour
         Rect box = new Rect(Screen.width - (w + 30 * s) * slide, 30 * s, w, h);
 
         GameUI.Fill(box, new Color(0.05f, 0.05f, 0.05f, 0.92f));
-        GameUI.Fill(new Rect(box.x, box.y, 8 * s, h), new Color(0.75f, 0.05f, 0.05f)); // red stripe
+        GameUI.Fill(new Rect(box.x, box.y, 8 * s, h), new Color(0.75f, 0.05f, 0.05f)); // red line on the side
 
         GUI.Label(new Rect(box.x + 25 * s, box.y + 10 * s, w - 35 * s, 24 * s), "ACHIEVEMENT UNLOCKED",
                   GameUI.Text(16, TextAnchor.UpperLeft, FontStyle.Bold));

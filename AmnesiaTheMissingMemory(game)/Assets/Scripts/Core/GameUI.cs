@@ -1,12 +1,13 @@
 using UnityEngine;
 
-// Small helpers for drawing on-screen UI with OnGUI, so no Canvas setup is needed.
-// PLACEHOLDER: swap for a real Canvas / UI Toolkit design for the final version.
+// helpers for drawing the on-screen stuff (boxes, text, the trophy).
+// placeholder: will be swapped for proper UI later.
 public static class GameUI
 {
-    // UI was designed for 1080p, this scales it to the current screen height
+    // everything was made for 1080p, this makes it fit other screen sizes
     public static float Scale => Screen.height / 1080f;
 
+    // draws a plain colored box
     public static void Fill(Rect rect, Color color)
     {
         Color old = GUI.color;
@@ -15,7 +16,7 @@ public static class GameUI
         GUI.color = old;
     }
 
-    // simple trophy icon built from rectangles
+    // trophy icon made out of rectangles
     public static void Trophy(Rect r, Color color)
     {
         void Part(float x, float y, float w, float h) =>
@@ -33,6 +34,26 @@ public static class GameUI
         Part(0.20f, 0.80f, 0.60f, 0.20f); // base
     }
 
+    // dark button that goes red when you hover it, can have a trophy on the left.
+    // returns true when it gets clicked
+    public static bool Button(Rect r, string label, int fontSize = 30, bool trophy = false)
+    {
+        float s = Scale;
+        bool hover = r.Contains(Event.current.mousePosition);
+
+        Fill(r, hover ? new Color(0.25f, 0.03f, 0.03f) : new Color(0.12f, 0.12f, 0.13f));
+        Fill(new Rect(r.x, r.y, 6 * s, r.height), hover ? new Color(0.75f, 0.05f, 0.05f) : new Color(0.35f, 0.35f, 0.35f));
+        if (trophy)
+        {
+            float icon = r.height * 0.55f;
+            Trophy(new Rect(r.x + 26 * s, r.y + (r.height - icon) / 2, icon, icon), new Color(0.95f, 0.75f, 0.2f));
+        }
+        GUI.Label(r, label, Text(fontSize, TextAnchor.MiddleCenter, FontStyle.Bold));
+
+        return GUI.Button(r, GUIContent.none, GUIStyle.none);
+    }
+
+    // white text style in the size you want
     public static GUIStyle Text(int size, TextAnchor anchor = TextAnchor.MiddleCenter, FontStyle style = FontStyle.Normal)
     {
         GUIStyle s = new GUIStyle(GUI.skin.label)
