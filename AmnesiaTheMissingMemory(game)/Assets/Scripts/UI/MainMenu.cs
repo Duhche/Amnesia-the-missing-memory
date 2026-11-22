@@ -3,7 +3,8 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// main menu: title, START (opens the 3 save slots) and ACHIEVEMENTS (per save)
+// main menu: title, START (opens the 3 save slots), ACHIEVEMENTS (per save), SETTINGS (volume)
+// and the music note in the corner to turn the menu music on/off
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private string gameScene = "Level1(night)"; // where a new save starts
@@ -17,7 +18,7 @@ public class MainMenu : MonoBehaviour
     static readonly Color Blood = new Color(0.75f, 0.05f, 0.05f);
     static readonly Color Faded = new Color(0.55f, 0.55f, 0.55f);
 
-    enum Page { Main, Saves, Achievements }
+    enum Page { Main, Saves, Achievements, Settings }
     Page page = Page.Main;
 
     SaveData[] saves;      // the saves that exist, null while loading or if the API is off
@@ -161,7 +162,40 @@ public class MainMenu : MonoBehaviour
 
         if (page == Page.Saves) DrawSaves();
         else if (page == Page.Achievements) DrawAchievements();
+        else if (page == Page.Settings) DrawSettings();
         else DrawMain();
+    }
+
+    void DrawSettings()
+    {
+        float s = GameUI.Scale;
+        float sw = Screen.width, sh = Screen.height;
+        float cx = sw / 2f;
+
+        GUI.Label(new Rect(0, sh * 0.12f, sw, 66 * s), "SETTINGS", GameUI.Text(52, TextAnchor.MiddleCenter, FontStyle.Bold));
+
+        float w = 640 * s;
+        SettingsUI.DrawVolume(cx - w / 2, sh * 0.35f, w);
+
+        float bw = 240 * s, bh = 58 * s;
+        if (Button(new Rect(cx - bw / 2, sh - bh - 50 * s, bw, bh), "BACK", false))
+            page = Page.Main;
+    }
+
+    // music note in the corner of the main menu, click to turn the menu music on/off
+    void DrawMusicToggle(float s)
+    {
+        float size = 64 * s;
+        Rect r = new Rect(Screen.width - size - 30 * s, 30 * s, size, size);
+        bool hover = r.Contains(Event.current.mousePosition);
+
+        GameUI.Fill(r, hover ? new Color(0.25f, 0.03f, 0.03f) : new Color(0.12f, 0.12f, 0.13f));
+        Rect icon = new Rect(r.x + size * 0.2f, r.y + size * 0.2f, size * 0.6f, size * 0.6f);
+        GameUI.MusicNote(icon, AudioManager.MenuMusicOn ? Color.white : Faded);
+        if (!AudioManager.MenuMusicOn) GameUI.Crossed(icon, Blood);
+
+        if (GUI.Button(r, GUIContent.none, GUIStyle.none))
+            AudioManager.MenuMusicOn = !AudioManager.MenuMusicOn;
     }
 
     void DrawMain()
@@ -178,11 +212,15 @@ public class MainMenu : MonoBehaviour
                   GameUI.Text(36, TextAnchor.MiddleCenter, FontStyle.Italic));
 
         // buttons
-        float w = 380 * s, h = 66 * s, y = sh * 0.56f;
+        float w = 380 * s, h = 66 * s, gap = 20 * s, y = sh * 0.52f;
         if (Button(new Rect(cx - w / 2, y, w, h), "START", false))
             OpenSaves();
-        if (Button(new Rect(cx - w / 2, y + h + 20 * s, w, h), "ACHIEVEMENTS", true))
+        if (Button(new Rect(cx - w / 2, y + (h + gap), w, h), "ACHIEVEMENTS", true))
             OpenAchievements();
+        if (Button(new Rect(cx - w / 2, y + 2 * (h + gap), w, h), "SETTINGS", false))
+            page = Page.Settings;
+
+        DrawMusicToggle(s);
     }
 
     void DrawSaves()

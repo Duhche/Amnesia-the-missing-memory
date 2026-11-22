@@ -42,6 +42,7 @@ public class SceneFader : MonoBehaviour
             yield return null;
 
         // fade out
+        AudioManager.Play(AudioManager.Sfx.SceneChange);
         GameState.InputLocked = true;
         for (alpha = 0; alpha < 1; alpha += Time.unscaledDeltaTime / FadeSeconds) yield return null;
         alpha = 1;

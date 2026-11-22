@@ -25,7 +25,7 @@ public class PlayerHandler : MonoBehaviour
     {
         moveDirection = Vector3.zero;
         Keyboard kb = Keyboard.current;
-        if (kb == null || GameState.InputLocked) return;
+        if (kb == null || GameState.InputLocked) { AudioManager.SetWalking(false); return; }
 
         float x = (kb.dKey.isPressed ? 1 : 0) - (kb.aKey.isPressed ? 1 : 0);
         float z = (kb.wKey.isPressed ? 1 : 0) - (kb.sKey.isPressed ? 1 : 0);
@@ -36,7 +36,11 @@ public class PlayerHandler : MonoBehaviour
         Vector3 right = Vector3.ProjectOnPlane(view.right, Vector3.up).normalized;
 
         moveDirection = (right * x + forward * z).normalized;
+        AudioManager.SetWalking(moveDirection != Vector3.zero); // footsteps while moving
     }
+
+    // stop the footsteps if the player gets turned off or removed
+    void OnDisable() => AudioManager.SetWalking(false);
 
     // physics stuff goes here
     void FixedUpdate()

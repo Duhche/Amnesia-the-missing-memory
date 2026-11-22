@@ -23,7 +23,9 @@ public class PickupItem : Interactable
         PlayerInventory.Add(itemName);
         AchievementManager.UnlockAll(achievements);
         interactor.ShowMessage($"Picked up {itemName}");
-        // placeholder: add a pickup sound here later
+
+        // collectibles (they have a database id) get the item sound, everything else like the knife gets the equip sound
+        AudioManager.Play(collectibleId > 0 ? AudioManager.Sfx.ItemPickup : AudioManager.Sfx.WeaponPickup);
         Destroy(gameObject);
     }
 }

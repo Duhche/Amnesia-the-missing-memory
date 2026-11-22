@@ -18,6 +18,7 @@ public class Inspectable : Interactable
     public override void Interact(PlayerInteractor interactor)
     {
         inspected = true;
+        AudioManager.Play(AudioManager.Sfx.Inspect);
         if (!string.IsNullOrEmpty(message)) interactor.ShowMessage(message);
 
         AchievementManager.UnlockAll(achievements);

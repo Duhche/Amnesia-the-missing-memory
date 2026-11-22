@@ -38,6 +38,7 @@ public class Victim : Interactable
     public void OnKilled(bool withKnife)
     {
         IsDead = true;
+        AudioManager.Play(AudioManager.Sfx.Kill);
         PlayDeath();
 
         if (AchievementManager.Instance != null)
